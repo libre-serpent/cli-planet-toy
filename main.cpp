@@ -46,8 +46,6 @@ void temp_generate(char buffer[PLANET_L], int x){
 }
 
 void lat_generate(char buffer[PLANET_L], int x){
-
-
     if (x % PLANET_W == 0 ||
         x % PLANET_W == PLANET_W/8 ||
         x % PLANET_W == 2*PLANET_W/8 ||
@@ -145,6 +143,12 @@ void render_circ(char buffer[PLANET_L], int start){
             std::cout << '\n';
         }
     }
+} // lord forgive me for this jank :o
+
+void wait_for(float t){
+    float Tf = t * 1000;
+    int Ti = static_cast<int>(Tf + 0.5);
+    std::this_thread::sleep_for(std::chrono::milliseconds(Ti));
 }
 
 //Main cycle
@@ -162,7 +166,7 @@ int main(){
         std::cout << "\x1B[2J\x1B[H";
         //render_rect(buffer);
         render_circ(buffer, loop);
-        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        wait_for(0.1);
     }
 
     return 0;
