@@ -30,8 +30,33 @@ void wait_for(float t){
     std::this_thread::sleep_for(std::chrono::milliseconds(Ti));
 }
 
-void print_color(std::string color, char c){
+void print_colored(std::string color, char c){
     std::cout << color << c << color_r;
+}
+
+void print_char(char c){
+    switch(c){
+        case 'O':
+            print_colored(ansi_dgrey, c);
+            break;
+        case 'o':
+            print_colored(ansi_grey, c);
+            break;
+        case '#':
+            print_colored(ansi_white, c);
+            break;
+        default:
+            print_colored(ansi_white, c);
+            break;
+    }
+}
+
+int array_sum(int array[], int array_length){
+    int sum = 0;
+    for (int x = 0; x < array_length; ++x){
+        sum += array[x];
+    }
+    return sum;
 }
 
 void init_length_array(int array[PLANET_D], int planet_height, int equator_width){
@@ -45,14 +70,6 @@ void init_length_array(int array[PLANET_D], int planet_height, int equator_width
 
         array[y] = circumference;
     }
-}
-
-int array_sum(int array[], int array_length){
-    int sum = 0;
-    for (int x = 0; x < array_length; ++x){
-        sum += array[x];
-    }
-    return sum;
 }
 
 void temp_generate(char array[], int x){
@@ -80,8 +97,30 @@ void init_char_array(char array[], int planet_length){
     }
 }
 
+void render_frame(int array_leng[], char array_char[], int height, int equator_width, int shift){
+    for (int y = 0; y < height; ++y){
+        int segment_length = array_leng[y]/2;
+        for (int x = 0; x < (equator_width/2 - segment_length)/2 ; ++x){
+            std::cout << ' ';
+        }
+        for (int x = 0; x < segment_length; ++x){
+            int unconditional_shift = array_sum(array_leng,y);
+            float segment_length_f = static_cast<float>(segment_length);
+            float equator_width_f = static_cast<float>(equator_width);
+            float shift_f = static_cast<float>(shift);
+            float temporal_shift_f = shift_f * (2*segment_length_f / equator_width_f);
+            int temporal_shift = static_cast<int>(temporal_shift_f + 0.5);
+            int l = unconditional_shift + (temporal_shift + x) % array_leng[y]/2;
+            print_char(array_char[l]);
+        }// for shift = max segment_length = max, for true shift
+        std::cout << '\n';
+    }
+}
+
 //Main cycle
 int main(){
+    float t = T / static_cast<float>(equator_width);
+
     int array_leng[PLANET_D];
     init_length_array(array_leng, PLANET_D, equator_width);
 
@@ -90,22 +129,17 @@ int main(){
     char array_char[planet_length];
     init_char_array(array_char, planet_length);
 
-    for (int y = 0; y < PLANET_D; ++y){
-        int segment_length = array_leng[y]/2;
-        for (int x = 0; x < (equator_width/2 - segment_length)/2 ; ++x){
-            std::cout << ' ';
+    int frame = 0;
+    while (true){
+        frame++;
+        if (frame == (equator_width)){
+            frame = 0;
         }
-        for (int x = 0; x < segment_length; ++x){
-            int unconditional_shift = array_sum(array_leng,y);
-            int temporal_shift = 5;
-            int l = unconditional_shift + (temporal_shift + x) % array_leng[y]/2;
-            std::cout << array_char[l];
-        }
-        std::cout << '\n';
+        std::cout << "\x1B[2J\x1B[H";
+        std::cout << frame << '\n';
+        render_frame(array_leng, array_char, PLANET_D, equator_width, frame);
+        wait_for(t);
     }
-    //std::cout << "\x1B[2J\x1B[H";
-    //render_function_of_some_kind(array_char,array_leng,loop);
-    //wait_for(0.1);
 
     return 0;
 }
