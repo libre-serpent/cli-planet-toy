@@ -97,14 +97,21 @@ void init_char_array(char array[], int planet_length){
     }
 }
 
-void render_frame(int array_leng[], char array_char[], int height, int equator_width, int shift){
+void init_shift_array(int array_sh[], int array_leng[], int height){
+    for (int y = 0; y < height; ++y){
+        array_sh[y] = array_sum(array_leng, y);
+    }
+}
+
+void render_frame(int array_leng[], char array_char[], int array_sh[],
+                  int height, int equator_width, int shift){
     for (int y = 0; y < height; ++y){
         int segment_length = array_leng[y]/2;
+        int unconditional_shift = array_sh[y];
         for (int x = 0; x < (equator_width/2 - segment_length)/2 ; ++x){
             std::cout << ' ';
         }
         for (int x = 0; x < segment_length; ++x){
-            int unconditional_shift = array_sum(array_leng,y);
             float segment_length_f = static_cast<float>(segment_length);
             float equator_width_f = static_cast<float>(equator_width);
             float shift_f = static_cast<float>(shift);
@@ -124,6 +131,9 @@ int main(){
     int array_leng[PLANET_D];
     init_length_array(array_leng, PLANET_D, equator_width);
 
+    int array_sh[PLANET_D];
+    init_shift_array(array_sh, array_leng, PLANET_D);
+
     int planet_length = array_sum(array_leng, PLANET_D);
 
     char array_char[planet_length];
@@ -137,7 +147,7 @@ int main(){
         }
         std::cout << "\x1B[2J\x1B[H";
         std::cout << frame << '\n';
-        render_frame(array_leng, array_char, PLANET_D, equator_width, frame);
+        render_frame(array_leng, array_char, array_sh, PLANET_D, equator_width, frame);
         wait_for(t);
     }
 
