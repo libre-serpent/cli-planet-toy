@@ -5,17 +5,21 @@
 #include <cmath>
 #include <thread>
 #include <chrono>
+#include <vector>
 
 //Data type definitions
-struct Vec2{
-    float x;
-    float y;
+struct Planet{
+    int diameter;
+    int equator_length;
+    int total_length;
+    std::vector<int> arr_len;
+    std::vector<int> arr_sum;
+    std::vector<char> arr_char;
 };
 
 //Constants
 const float T = 10.0; // Time in seconds to complete a full rotation
-const int PLANET_D = 20; // Diameter of the planet == height of the planet in character units
-const int equator_width = static_cast<int>((PLANET_D * 4) + 0.5); // Width of the equator in chars (yes pi = 4)
+const int PLANET_DIAMETER = 20; // Diameter of the planet == height of the planet in character units
 
 const std::string color_r = "\033[0m";
 std::string color = "\033[38;5;255m";
@@ -51,7 +55,7 @@ void print_char(char c){
     }
 }
 
-int array_sum(int array[], int array_length){
+int array_sum(std::vector<int>& array, int array_length){
     int sum = 0;
     for (int x = 0; x < array_length; ++x){
         sum += array[x];
@@ -59,8 +63,8 @@ int array_sum(int array[], int array_length){
     return sum;
 }
 
-void init_length_array(int array[PLANET_D], int planet_height, int equator_width){
-    for (int y = 0; y < PLANET_D; ++y){
+void init_length_array(std::vector<int>& array, int planet_height, int equator_width){
+    for (int y = 0; y < planet_height; ++y){
         float y_f = static_cast<float>(y) + 0.5;
         float h_f = static_cast<float>(planet_height);
 
@@ -72,7 +76,7 @@ void init_length_array(int array[PLANET_D], int planet_height, int equator_width
     }
 }
 
-void temp_generate(char array[], int x){
+void temp_generate(std::vector<char>& array, int x){
     int rn = rand() % 8 + 1;
     switch(rn){
         case 1:
@@ -90,20 +94,20 @@ void temp_generate(char array[], int x){
     }
 }
 
-void init_char_array(char array[], int planet_length){
+void init_char_array(std::vector<char>& array, int planet_length){
     srand(time(0));
     for (int x = 0; x < planet_length; ++x){
         temp_generate(array, x);
     }
 }
 
-void init_shift_array(int array_sh[], int array_leng[], int height){
+void init_shift_array(std::vector<int>& array_sh, std::vector<int>& array_leng, int height){
     for (int y = 0; y < height; ++y){
         array_sh[y] = array_sum(array_leng, y);
     }
 }
 
-void render_frame(int array_leng[], char array_char[], int array_sh[],
+void render_frame(std::vector<int>& array_leng, std::vector<char>& array_char, std::vector<int>& array_sh,
                   int height, int equator_width, int shift){
     for (int y = 0; y < height; ++y){
         int segment_length = array_leng[y]/2;
@@ -118,6 +122,7 @@ void render_frame(int array_leng[], char array_char[], int array_sh[],
             float temporal_shift_f = shift_f * (2*segment_length_f / equator_width_f);
             int temporal_shift = static_cast<int>(temporal_shift_f + 0.5);
             int l = unconditional_shift + (temporal_shift + x) % array_leng[y]/2;
+            //std::cout << array_char[l];
             print_char(array_char[l]);
         }// for shift = max segment_length = max, for true shift
         std::cout << '\n';
@@ -126,28 +131,30 @@ void render_frame(int array_leng[], char array_char[], int array_sh[],
 
 //Main cycle
 int main(){
-    float t = T / static_cast<float>(equator_width);
+    Planet planet;
+    planet.diameter = PLANET_DIAMETER;
+    planet.equator_length = 4 * planet.diameter;
+    planet.arr_len.resize(planet.diameter);
+    planet.arr_sum.resize(planet.diameter);
 
-    int array_leng[PLANET_D];
-    init_length_array(array_leng, PLANET_D, equator_width);
+    init_length_array(planet.arr_len, planet.diameter, planet.equator_length);
+    init_shift_array(planet.arr_sum, planet.arr_len, planet.diameter);
 
-    int array_sh[PLANET_D];
-    init_shift_array(array_sh, array_leng, PLANET_D);
+    planet.total_length = array_sum(planet.arr_len, planet.diameter);
+    planet.arr_char.resize(planet.total_length);
+    init_char_array(planet.arr_char, planet.total_length);
 
-    int planet_length = array_sum(array_leng, PLANET_D);
-
-    char array_char[planet_length];
-    init_char_array(array_char, planet_length);
-
+    float t = T / static_cast<float>(planet.equator_length);
     int frame = 0;
+
     while (true){
         frame++;
-        if (frame == (equator_width)){
+        if (frame == (planet.equator_length)){
             frame = 0;
         }
         std::cout << "\x1B[2J\x1B[H";
         std::cout << frame << '\n';
-        render_frame(array_leng, array_char, array_sh, PLANET_D, equator_width, frame);
+        render_frame(planet.arr_len, planet.arr_char, planet.arr_sum, planet.diameter, planet.equator_length, frame);
         wait_for(t);
     }
 
