@@ -1,8 +1,9 @@
+#include "planet.h"
+
 #include <iostream>
 #include <ctime>
 #include <thread>
 #include <chrono>
-#include "planet.h"
 
 //Functions
 void wait_for(float t){
@@ -12,7 +13,7 @@ void wait_for(float t){
 }
 
 //Constants
-const float T = 10.0; // Time in seconds to complete a full rotation
+const float T = 20.0; // Time in seconds to complete a full rotation
 const int PLANET_DIAMETER = 20; // Diameter of the planet == height of the planet in character units
 
 //Main cycle

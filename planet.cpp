@@ -1,66 +1,12 @@
 #include "planet.h"
+#include "print.h"
+#include "generate.h"
+#include "array_sum.h"
+
 #include <iostream>
 #include <string>
-#include <cstdlib>
 #include <vector>
-#include <iostream>
 #include <cmath>
-
-//Consts
-const std::string color_r = "\033[0m";
-std::string color = "\033[38;5;255m";
-const std::string ansi_white = "\033[38;5;255m";
-const std::string ansi_grey = "\033[38;5;250m";
-const std::string ansi_dgrey = "\033[38;5;240m";
-
-//Functions
-
-void print_colored(std::string color, char c){
-    std::cout << color << c << color_r;
-}
-
-void print_char(char c){
-    switch(c){
-        case 'O':
-            print_colored(ansi_dgrey, c);
-            break;
-        case 'o':
-            print_colored(ansi_grey, c);
-            break;
-        case '#':
-            print_colored(ansi_white, c);
-            break;
-        default:
-            print_colored(ansi_white, c);
-            break;
-    }
-}
-
-int array_sum(std::vector<int>& array, int array_length){
-    int sum = 0;
-    for (int x = 0; x < array_length; ++x){
-        sum += array[x];
-    }
-    return sum;
-}
-
-void temp_generate(std::vector<char>& array, int x){
-    int rn = rand() % 8 + 1;
-    switch(rn){
-        case 1:
-            array[x] = 'O';
-            break;
-        case 2:
-            array[x] = 'o';
-            break;
-        case 3:
-            array[x] = 'o';
-            break;
-        default:
-            array[x] = '#';
-            break;
-    }
-}
 
 void Planet::init_length_array(){
     arr_len.resize(diameter);
@@ -69,7 +15,7 @@ void Planet::init_length_array(){
         float h_f = static_cast<float>(diameter);
 
         float relative_height = 2 * (y_f/h_f) - 1; // this is a height in -1 ... 1
-        float circumference_f = equator_length * cos(asin(relative_height));
+        float circumference_f = equator_length * sqrt(1-(relative_height*relative_height));
         int circumference = static_cast<int>(circumference_f + 0.5);
 
         arr_len[y] = circumference;
