@@ -25,10 +25,7 @@ int main(){
     int frame = 0;
 
     while (true){
-        frame++;
-        if (frame == (planet.equator_length)){
-            frame = 0;
-        }
+        frame = (frame + 1) % planet.equator_length;
         std::cout << "\x1B[2J\x1B[H";
         std::cout << frame << '\n';
         planet.render_frame(frame);
