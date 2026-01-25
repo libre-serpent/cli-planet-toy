@@ -27,7 +27,7 @@ int main(){
     while (true){
         frame = (frame + 1) % planet.equator_length;
         std::cout << "\x1B[2J\x1B[H";
-        std::cout << frame << '\n';
+        //std::cout << frame << '\n';
         planet.render_frame(frame);
         wait_for(t);
     }
