@@ -13,8 +13,8 @@ void wait_for(float t){
 }
 
 //Constants
-const float T = 20.0; // Time in seconds to complete a full rotation
-const int PLANET_DIAMETER = 20; // Diameter of the planet == height of the planet in character units
+const float T = 30.0; // Time in seconds to complete a full rotation
+const int PLANET_DIAMETER = 40; // Diameter of the planet == height of the planet in character units
 
 //Main cycle
 int main(){

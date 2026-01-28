@@ -30,8 +30,19 @@ void Planet::init_sum_array(){
 void Planet::init_char_array(){
     arr_char.resize(total_length);
     srand(time(0));
-    for (int x = 0; x < total_length; ++x){
+    /*for (int x = 0; x < total_length; ++x){
         temp_generate(arr_char, x);
+    }*/
+    for (int y = 0; y < diameter; ++y){
+        int length = arr_len[y];
+        int shift = arr_sum[y];
+        double y_norm = static_cast<double>(y) / static_cast<double>(diameter);
+        for (int x = 0; x < length ; ++x){
+            int l = shift + x;
+            double x_norm = (static_cast<double>(x) / static_cast<double>(length))*2 - 1;
+            Sample s = temp_sample_xy(x_norm,y_norm);
+            temp_reformat_xy(arr_char, s, l);
+        }
     }
 }
 void Planet::init(int d){
