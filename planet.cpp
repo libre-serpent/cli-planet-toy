@@ -27,8 +27,8 @@ void Planet::init_sum_array(){
         arr_sum[y] = array_sum(arr_len, y);
     }
 }
-void Planet::init_char_array(){
-    arr_char.resize(total_length);
+void Planet::init_data_array(){
+    arr_data.resize(total_length);
     srand(time(0));
     /*for (int x = 0; x < total_length; ++x){
         temp_generate(arr_char, x);
@@ -41,7 +41,8 @@ void Planet::init_char_array(){
             int l = shift + x;
             double x_norm = (static_cast<double>(x) / static_cast<double>(length))*2 - 1;
             Sample s = temp_sample_xy(x_norm,y_norm);
-            temp_reformat_xy(arr_char, s, l);
+            TerrainType t = temp_reformat_xy(s, l);
+            arr_data[l] = t;
         }
     }
 }
@@ -51,7 +52,7 @@ void Planet::init(int d){
     init_length_array();
     init_sum_array();
     total_length = array_sum(arr_len, diameter);
-    init_char_array();
+    init_data_array();
 }
 void Planet::render_frame(int rotation){
     for (int y = 0; y < diameter; ++y){
@@ -67,7 +68,7 @@ void Planet::render_frame(int rotation){
             float temporal_shift_f = shift_f * (2*segment_length_f / equator_length_f);
             int temporal_shift = static_cast<int>(temporal_shift_f + 0.5);
             int l = unconditional_shift + (temporal_shift + x) % arr_len[y]/2;
-            print_char(arr_char[l]);
+            print_char(arr_data[l].character, arr_data[l].fg_color, arr_data[l].bg_color);
         }
         std::cout << '\n';
     }

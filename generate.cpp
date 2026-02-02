@@ -5,6 +5,52 @@
 #include <ctime>
 #include <iostream>
 
+//temp defintion of terrain types
+
+TerrainType tt_ice{
+    '*',
+    195,
+    117
+};
+
+TerrainType tt_water{
+    '~',
+    255,
+    39
+};
+
+TerrainType tt_sand{
+    '#',
+    229,
+    223
+};
+
+TerrainType tt_grass{
+    '#',
+    112,
+    100
+};
+
+TerrainType tt_low_mountain{
+    '.',
+    248,
+    245
+};
+
+TerrainType tt_medium_mountain{
+    '\"',
+    252,
+    245
+};
+
+TerrainType tt_high_mountain{
+    '^',
+    231,
+    245
+};
+
+//eof
+
 double pi = 3.14159;
 
 void temp_generate(std::vector<char>& array, int x){
@@ -53,45 +99,35 @@ Sample temp_sample_xy(double x_n, double y_n){//x -1...1 y 0...1
     return s;
 }
 
-void temp_reformat_xy(std::vector<char>& array, Sample s, int l){
+TerrainType temp_reformat_xy(Sample s, int l){
     double height = s.height;
     double moisture = s.moisture;
     double temperature = s.temperature;
 
-    std::cout << height << '/' << moisture << '/' << temperature << '\n';
+    std::cout << l << ':' << height << '/' << moisture << '/' << temperature << '\n';
 
-    if (height < 0){
+    if (height < 0){ //below sea level
         if (temperature < -0.1){
-            array[l] = '*';
-            return;
+            return tt_ice;
         }
-        array[l] = '~';
-        return;
+        return tt_water;
     }
-    else if (temperature < -0.3){
-        array[l] = '*';
-        return;
-    }else if (moisture < 0.2){
-        array[l] = '.';
-        return;
+    else if (height < 0.1 && temperature > 0.1){ //beach
+        return tt_sand;
     }
-    else if (moisture < 0.2){
-        array[l] = 'z';
-        return;
+    else if (temperature < -0.3){ // frozen tundra
+        return tt_ice;
     }
-    else if (height > 0.1){
-        if (height > 0.3){
-            if (height > 0.5){
-                array[l] = '^';
-                return;
-            }
-            array[l] = 'X';
-            return;
-        }
-        array[l] = 'x';
-        return;
+    else if (height > 0.4){
+        return tt_high_mountain;
+    }
+    else if (height > 0.3){
+        return tt_medium_mountain;
+    }
+    else if (height > 0.25){
+        return tt_low_mountain;
     }
     else {
-        array[l] = '#';
+        return tt_grass;
     }
 }

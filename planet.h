@@ -1,4 +1,5 @@
 #pragma once
+#include "generate.h"
 #include <vector>
 
 struct Planet{
@@ -7,11 +8,11 @@ struct Planet{
     int total_length;
     std::vector<int> arr_len;
     std::vector<int> arr_sum;
-    std::vector<char> arr_char;
+    std::vector<TerrainType> arr_data;
 
     void init_length_array();
     void init_sum_array();
-    void init_char_array();
+    void init_data_array();
     void init(int d);
     void render_frame(int rotation);
 };
