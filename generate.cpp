@@ -7,43 +7,49 @@
 
 //temp defintion of terrain types
 
-TerrainType tt_ice{
+const TerrainType tt_ice{
     '*',
     195,
-    117
+    153
 };
 
-TerrainType tt_water{
+const TerrainType tt_tundra{
+    '#',
+    195,
+    153
+};
+
+const TerrainType tt_water{
     '~',
     255,
     39
 };
 
-TerrainType tt_sand{
+const TerrainType tt_sand{
     '#',
     229,
     223
 };
 
-TerrainType tt_grass{
+const TerrainType tt_grass{
     '#',
     112,
     100
 };
 
-TerrainType tt_low_mountain{
+const TerrainType tt_low_mountain{
     '.',
     248,
     245
 };
 
-TerrainType tt_medium_mountain{
+const TerrainType tt_medium_mountain{
     '\"',
     252,
     245
 };
 
-TerrainType tt_high_mountain{
+const TerrainType tt_high_mountain{
     '^',
     231,
     245
@@ -53,43 +59,23 @@ TerrainType tt_high_mountain{
 
 double pi = 3.14159;
 
-void temp_generate(std::vector<char>& array, int x){
-    int rn = rand() % 8 + 1;
-    switch(rn){
-        case 1:
-            array[x] = 'O';
-            break;
-        case 2:
-            array[x] = 'o';
-            break;
-        case 3:
-            array[x] = 'o';
-            break;
-        default:
-            array[x] = '#';
-            break;
-    }
-}
+Sample temp_sample_xy(double x_n, double y_n,
+                      int seed_h_lat, int seed_h_lon,
+                      int seed_m_lat, int seed_m_lon,
+                      int seed_t_lat, int seed_t_lon){//x -1...1 y 0...1
 
-Sample temp_sample_xy(double x_n, double y_n){//x -1...1 y 0...1
-    srand(time(0));
-    int seed_heig_lat = rand() % 888888 + 111111;
-    int seed_heig_lon = rand() % 888888 + 111111;
-    int seed_mois_lat = rand() % 888888 + 111111;
-    int seed_mois_lon = rand() % 888888 + 111111;
-    int seed_temp_lat = rand() % 888888 + 111111;
-    int seed_temp_lon = rand() % 888888 + 111111;
-
-    std::cout << "Height seed is: " << seed_heig_lat << seed_heig_lon << '\n';
-    std::cout << "Moisture seed is: " << seed_mois_lat << seed_mois_lon << '\n';
-    std::cout << "Temperature seed is: " << seed_temp_lat << seed_temp_lon << '\n';
+    std::cout << "Height seed is: " << seed_h_lat << seed_h_lon << '\n';
+    std::cout << "Moisture seed is: " << seed_m_lat << seed_m_lon << '\n';
+    std::cout << "Temperature seed is: " << seed_t_lat << seed_t_lon << '\n';
 
     double lat = y_n * 2.0 * pi;
     double lon = x_n * 2.0 * pi;
 
-    double height = (noise(lat, seed_heig_lat) * 0.3 + noise(lon, seed_heig_lon) * 0.7);
-    double moisture = (noise(lat, seed_heig_lat) * 0.25 + noise(lon, seed_heig_lon) * 0.25 + 0.5);
-    double temperature = (-2.0 * (std::fabs(y_n * 2.0 - 1.0)-0.5)) * 0.5 + (noise(lat, seed_temp_lat) * 0.2 + noise(lon, seed_temp_lon) * 0.3);
+    //temporary? sample parameters
+    double height = (noise(lat, seed_h_lat) * 0.3 + noise(lon, seed_h_lon) * 0.7);
+    double moisture = (noise(lat, seed_h_lat) * 0.25 + noise(lon, seed_h_lon) * 0.25 + 0.5);
+    double temperature = (-2.0 * (std::fabs(y_n * 2.0 - 1.0)-0.5)) * 0.5 + (noise(lat, seed_t_lat) * 0.2 + noise(lon, seed_t_lon) * 0.3);
+    //featuring magical numbers :) ^ that whole ordeal creates a temperature field -1...0.5...-1 where y_n = 0...1
 
     Sample s;
     s.height = height;
@@ -99,24 +85,22 @@ Sample temp_sample_xy(double x_n, double y_n){//x -1...1 y 0...1
     return s;
 }
 
-TerrainType temp_reformat_xy(Sample s, int l){
+TerrainType temp_reformat_xy(Sample s, int l){//basically just solver for the sample
     double height = s.height;
     double moisture = s.moisture;
     double temperature = s.temperature;
 
     std::cout << l << ':' << height << '/' << moisture << '/' << temperature << '\n';
+    //wooo debug codeeeeee
 
     if (height < 0){ //below sea level
-        if (temperature < -0.1){
+        if (temperature < -0.2){
             return tt_ice;
         }
         return tt_water;
     }
     else if (height < 0.1 && temperature > 0.1){ //beach
         return tt_sand;
-    }
-    else if (temperature < -0.3){ // frozen tundra
-        return tt_ice;
     }
     else if (height > 0.4){
         return tt_high_mountain;
@@ -126,6 +110,9 @@ TerrainType temp_reformat_xy(Sample s, int l){
     }
     else if (height > 0.25){
         return tt_low_mountain;
+    }
+    else if (temperature < -0.1){ // frozen tundra
+        return tt_tundra;
     }
     else {
         return tt_grass;
