@@ -80,13 +80,15 @@ void Planet::render_frame(int rotation){
             float warped_rotation_f = rotation_f * (2*segment_length_f / equator_length_f);
             // ^ here, rotation is 0...equator_length. this magical equation converts it to 0...2*segment length.
             //                                         2*seglen is the full length of the slice to be rendered.
-            //                                         why not just do arr_len[y]? good question. idk.
+            //                                         why not just do arr_len[y]? bc we're working with floats
+            //                                         and adding another value or a bulky expression would be uglier ig
             // this makes every slice rotate on its own
             int warped_rotation = static_cast<int>(warped_rotation_f + 0.5);
             int l = unconditional_shift + ((warped_rotation + x) % arr_len[y])/2;
             //     ^ this whole expression returns how far we are in the data array,
             //       % wraps the iterator w_r+x in case of overflows, the whole thing
-            //       is divided by 2 for some reason i can not yet fathom. but it's necessary.
+            //       is divided by 2 because arr_len[y] is the full circumference of
+            //       the planet at y, but we only need to render the half facing us (hence 1/2)
             print_char(arr_data[l].character, arr_data[l].fg_color, arr_data[l].bg_color);
         }
         std::cout << '\n';

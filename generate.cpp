@@ -5,8 +5,8 @@
 #include <ctime>
 #include <iostream>
 
-//temp defintion of terrain types
-
+//temp defintion of terrain types.
+//to be moved to xml
 const TerrainType tt_ice{
     '*',
     195,
@@ -54,7 +54,6 @@ const TerrainType tt_high_mountain{
     231,
     245
 };
-
 //eof
 
 double pi = 3.14159;
