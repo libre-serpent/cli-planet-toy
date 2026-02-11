@@ -1,5 +1,5 @@
-#include "generate.h"
-#include "noise.h"
+#include "generate/generate.h"
+#include "support/noise.hpp"
 #include <vector>
 #include <cmath>
 #include <ctime>
@@ -56,8 +56,6 @@ const TerrainType tt_high_mountain{
 };
 //eof
 
-double pi = 3.14159;
-
 Sample temp_sample_xy(double x_n, double y_n,
                       int seed_h_lat, int seed_h_lon,
                       int seed_m_lat, int seed_m_lon,
@@ -67,8 +65,8 @@ Sample temp_sample_xy(double x_n, double y_n,
     std::cout << "Moisture seed is: " << seed_m_lat << seed_m_lon << '\n';
     std::cout << "Temperature seed is: " << seed_t_lat << seed_t_lon << '\n';
 
-    double lat = y_n * 2.0 * pi;
-    double lon = x_n * 2.0 * pi;
+    double lat = y_n * 2.0 * 3.14159;
+    double lon = x_n * 2.0 * 3.14159;
 
     //temporary? sample parameters
     double height = (noise(lat, seed_h_lat) * 0.3 + noise(lon, seed_h_lon) * 0.7);

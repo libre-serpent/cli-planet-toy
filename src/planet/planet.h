@@ -1,5 +1,5 @@
 #pragma once
-#include "generate.h"
+#include "generate/generate.h"
 #include <vector>
 
 struct Planet{

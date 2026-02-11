@@ -1,7 +1,7 @@
-#include "planet.h"
-#include "print.h"
-#include "generate.h"
-#include "array_sum.h"
+#include "planet/planet.h"
+#include "generate/generate.h"
+#include "support/print.hpp"
+#include "support/array_sum.hpp"
 
 #include <iostream>
 #include <string>

@@ -1,10 +1,10 @@
-#include "noise.h"
+#pragma once
 #include <cmath>
 #include <iostream>
 
 const double pi = 3.14159;
 
-double noise(double x_rad, int seed, int octaves){//assuming x = 0...1
+inline double noise(double x_rad, int seed, int octaves = 5){//assuming x = 0...1
     double seed_i = std::fmod(static_cast<double>(seed) / 1000000,1);
     double seed_j = std::fmod(static_cast<double>(seed) / 10000,1);
     double seed_k = std::fmod(static_cast<double>(seed) / 100,1);

@@ -1,3 +1,3 @@
 #!/bin/bash
 
-g++ main.cpp planet.cpp print.cpp array_sum.cpp noise.cpp generate.cpp -o build/main
+g++ -Isrc src/*.cpp src/planet/*.cpp src/generate/*.cpp -o build/main

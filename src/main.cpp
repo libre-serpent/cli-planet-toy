@@ -1,4 +1,4 @@
-#include "planet.h"
+#include "planet/planet.h"
 
 #include <iostream>
 #include <ctime>
