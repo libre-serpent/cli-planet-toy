@@ -8,7 +8,7 @@
 #include <vector>
 #include <cmath>
 
-void Planet::init_length_array(){
+void Planet::init_length_array(bool debug){
     arr_len.resize(diameter);
     for (int y = 0; y < diameter; ++y){
         float y_f = static_cast<float>(y) + 0.5;
@@ -20,16 +20,23 @@ void Planet::init_length_array(){
         int circumference = static_cast<int>(circumference_f + 0.5);
 
         arr_len[y] = circumference;
+
+        if (debug){
+            std::cout << "Initialised array of planet layer lengths successfully." << '\n';
+        }
     }
 }
-void Planet::init_sum_array(){
+void Planet::init_sum_array(bool debug){
     arr_sum.resize(diameter);
     for (int y = 0; y < diameter; ++y){
         arr_sum[y] = array_sum(arr_len, y);
         //  ^ of all array members up to but not including y-th
+        if (debug){
+            std::cout << "Initialised array of layer prefixes successfully." << '\n';
+        }
     }
 }
-void Planet::init_data_array(){
+void Planet::init_data_array(bool debug){
     arr_data.resize(total_length);
     srand(time(0)); // seeding the random generator
 
@@ -39,6 +46,10 @@ void Planet::init_data_array(){
     int seed_m_lon = rand() % 888888 + 111111;
     int seed_t_lat = rand() % 888888 + 111111;
     int seed_t_lon = rand() % 888888 + 111111;
+
+    if (debug){
+        std::cout << "Generator seeded successfully." << '\n';
+    }
 
     for (int y = 0; y < diameter; ++y){ // for every slice of the planet
         int length = arr_len[y]; //length of the current slice
@@ -55,17 +66,32 @@ void Planet::init_data_array(){
             TerrainType t = temp_reformat_xy(s, l);
             arr_data[l] = t;
         }
+        if (debug){
+            std::cout << "Generated layer " << y << " of " << diameter << " successfully." << '\n';
+        }
+    }
+    if (debug){
+        std::cout << "Planet generation is successful." << '\n';
     }
 }
-void Planet::init(int d){
+void Planet::init(int d, bool debug){
     diameter = d;
     equator_length = 4*d; //yes, pi is equal to 4 here. it's ok.
-    init_length_array();
-    init_sum_array();
+    if (debug){
+        std::cout << "Initialising..." << '\n';
+    }
+    init_length_array(debug);
+    init_sum_array(debug);
     total_length = array_sum(arr_len, diameter);
-    init_data_array();
+    init_data_array(debug);
+    if (debug){
+        std::cout << "Planet initialised successfully." << '\n';
+    }
 }
-void Planet::render_frame(int rotation){
+void Planet::render_sphere(int rotation, bool debug){
+    if (debug){
+        std::cout << "Frame " << rotation << '\n';
+    }
     for (int y = 0; y < diameter; ++y){
         int segment_length = arr_len[y]/2; // length of the slice to be rendered
         int unconditional_shift = arr_sum[y];

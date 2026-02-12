@@ -61,10 +61,6 @@ Sample temp_sample_xy(double x_n, double y_n,
                       int seed_m_lat, int seed_m_lon,
                       int seed_t_lat, int seed_t_lon){//x -1...1 y 0...1
 
-    std::cout << "Height seed is: " << seed_h_lat << seed_h_lon << '\n';
-    std::cout << "Moisture seed is: " << seed_m_lat << seed_m_lon << '\n';
-    std::cout << "Temperature seed is: " << seed_t_lat << seed_t_lon << '\n';
-
     double lat = y_n * 2.0 * 3.14159;
     double lon = x_n * 2.0 * 3.14159;
 
@@ -86,9 +82,6 @@ TerrainType temp_reformat_xy(Sample s, int l){//basically just solver for the sa
     double height = s.height;
     double moisture = s.moisture;
     double temperature = s.temperature;
-
-    std::cout << l << ':' << height << '/' << moisture << '/' << temperature << '\n';
-    //wooo debug codeeeeee
 
     if (height < 0){ //below sea level
         if (temperature < -0.2){

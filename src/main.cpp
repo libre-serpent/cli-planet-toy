@@ -1,4 +1,5 @@
 #include "planet/planet.h"
+#include "support/argparser.hpp"
 
 #include <iostream>
 #include <ctime>
@@ -12,23 +13,32 @@ void wait_for(float t){
     std::this_thread::sleep_for(std::chrono::milliseconds(Ti));
 }
 
-//Constants
-const float T = 18.0; // Time in seconds to complete a full rotation
-const int PLANET_DIAMETER = 40; // Diameter of the planet == height of the planet in character units
-
 //Main cycle
-int main(){
-    Planet planet;
-    planet.init(PLANET_DIAMETER);
+int main(int argc, char** argv){
+    auto arguments = parse_arguments(argc, argv);
+    bool debug = arguments["debug"].as<bool>();
+    int diameter = arguments["diameter"].as<int>();
+    int timerotation = arguments["timerotation"].as<int>();
 
-    float t = T / static_cast<float>(planet.equator_length);
+    if (arguments.count("help"))
+    {
+        return_help();
+        return 0;
+    }
+
+    Planet planet;
+    planet.init(diameter, debug);
+    if (debug){
+        wait_for(3);
+    }
+
+    float t = timerotation / static_cast<float>(planet.equator_length);
     int frame = 0;
 
     while (true){
         frame = (frame + 1) % planet.equator_length;
         std::cout << "\x1B[2J\x1B[H"; //ANSI clear escape sequence
-        //std::cout << frame << '\n';
-        planet.render_frame(frame);
+        planet.render_sphere(frame, debug);
         wait_for(t);
     }
 

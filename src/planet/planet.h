@@ -10,9 +10,9 @@ struct Planet{
     std::vector<int> arr_sum; //n-th member is the sum of all 0...n members of arr_len
     std::vector<TerrainType> arr_data; //contains TerrainType objects consisting of a character, and two color codes 0-255
 
-    void init_length_array();
-    void init_sum_array();
-    void init_data_array();
-    void init(int d);
-    void render_frame(int rotation);
+    void init_length_array(bool debug=false);
+    void init_sum_array(bool debug=false);
+    void init_data_array(bool debug=false);
+    void init(int d, bool debug=false);
+    void render_sphere(int rotation=0, bool debug=false);
 };
